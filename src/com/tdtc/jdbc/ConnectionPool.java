@@ -45,12 +45,12 @@ public class ConnectionPool
 	private ExecutorService execService;
 	
 	// JDBC Driver name
-	//String m_JDBCDriver = "com.mysql.jdbc.Driver"; // mySQL
-	String m_JDBCDriver = "net.sourceforge.jtds.jdbc.Driver"; // MSSQL
+	String m_JDBCDriver = "com.mysql.jdbc.Driver"; // mySQL
+	//String m_JDBCDriver = "net.sourceforge.jtds.jdbc.Driver"; // MSSQL
 
 	// JDBC Connection URL
-	//String m_JDBCConnectionURL = "jdbc:mysql://localhost:3306/carnumber"; // mySQL
-	String m_JDBCConnectionURL = "jdbc:jtds:sqlserver://127.0.0.1:1433/pubs"; // MSSQL
+	String m_JDBCConnectionURL = "jdbc:mysql://localhost:3306/carnumber"; // mySQL
+	//String m_JDBCConnectionURL = "jdbc:jtds:sqlserver://127.0.0.1:1433/pubs"; // MSSQL
 	
 	// Minimum size of pool
 	int m_ConnectionPoolSize = 5;
@@ -73,7 +73,7 @@ public class ConnectionPool
 	int m_MaxConnections = -1;
 	
 	// Our timer object
-	com.cartionsoft.timer.Timer m_timer;
+	com.tdtc.timer.Timer m_timer;
 	
 	public ConnectionPool(String userID, String password) {
 		// TODO Auto-generated constructor stub
@@ -172,7 +172,7 @@ public class ConnectionPool
 			ConnObject co = new ConnObject();
 
 			// if mysql 
-			//strUserName = "root";
+			strUserName = "root";
 			co.connection = 
 				DriverManager.getConnection(m_JDBCConnectionURL, strUserName, strPWD);
 

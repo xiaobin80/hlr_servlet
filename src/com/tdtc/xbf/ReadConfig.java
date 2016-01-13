@@ -34,8 +34,19 @@ public class ReadConfig {
 	
 	public String getElement(int index, String childElements) 
 	  throws Exception {
+		// direct read file
 		//Document doc = new Builder().build(xmlFile);
-		InputStream in = new FileInputStream(xmlFile1);
+		
+		// use InputStream read file
+		//InputStream in = new FileInputStream(xmlFile1);
+		
+		// use ClassLoad
+		InputStream in = ClassLoader.getSystemResourceAsStream(xmlFile1);
+		if (in == null) {
+			ClassLoader cl = ReadConfig.class.getClassLoader();
+			in = cl.getResourceAsStream(xmlFile1);
+		}
+		
 		Document doc = new Builder().build(in);
 		Elements elements = doc.getRootElement().getChildElements();
 		Element element = elements.get(index);

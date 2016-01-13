@@ -5,7 +5,7 @@
     <description></description>
     <display-name>servletCarNumber</display-name>
     <servlet-name>svtCarNumber</servlet-name>
-    <servlet-class>com.cartionsoft.web.PastTimeList</servlet-class>
+    <servlet-class>com.tdtc.web.PastTimeList</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>svtCarNumber</servlet-name>
@@ -17,7 +17,7 @@
     <description></description>
     <display-name>ConnectionServlet</display-name>
     <servlet-name>ConnectionServlet</servlet-name>
-    <servlet-class>com.cartionsoft.web.ConnectionServlet</servlet-class>
+    <servlet-class>com.tdtc.web.ConnectionServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
@@ -27,6 +27,6 @@
   
   <context-param>
     <param-name>xmlPath</param-name>
-    <param-value>d:/war/config/configP.xml</param-value>
+    <param-value>com\tdtc\xbf\configP.xml</param-value>
   </context-param>
 </web-app>

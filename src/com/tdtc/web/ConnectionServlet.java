@@ -11,13 +11,13 @@ package com.tdtc.web;
 
 import java.sql.SQLException;
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import com.tdtc.jdbc.ConnectionPool;
 import com.tdtc.xbf.ReadConfig;
 import com.tdtc.xbf.ReadXbf;
 import com.tdtc.xbf.ConfigServlet;
+import org.apache.log4j.*;
 
 /**
  * <p>This is a simple servlet that holds a global connection
@@ -28,6 +28,9 @@ import com.tdtc.xbf.ConfigServlet;
  public class ConnectionServlet 
    extends javax.servlet.http.HttpServlet {
    
+   static final long serialVersionUID = 1L;
+   
+   private final Logger logger = Logger.getLogger(getClass());
    // Context attribute key
    public static String KEY = "com.cartionsoft.web.ConnectionServlet";
    private String strXbfContent;
@@ -39,7 +42,7 @@ import com.tdtc.xbf.ConfigServlet;
    private String strPassWord;
    
    // Our Connection Pool
-   com.tdtc.jdbc.ConnectionPool m_ConnectionPool;
+   com.cartionsoft.jdbc.ConnectionPool m_ConnectionPool;
    
     /* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#HttpServlet()
@@ -87,6 +90,7 @@ import com.tdtc.xbf.ConfigServlet;
 			e.printStackTrace();
 		}
 		
+		logger.info(strLibPath);
 		ReadXbf readX = new ReadXbf(strLibPath);
 		strXbfContent = readX.readRecordMsSql(-1, strXbfPath);
 		

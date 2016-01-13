@@ -32,9 +32,19 @@ import com.tdtc.xbf.ReadConfig;
  public class PastTimeList extends javax.servlet.http.HttpServlet {
    static final long serialVersionUID = 1L;
    
+   /**
+    * <p>log4j variable
+    */
    private final Logger logger = Logger.getLogger(this.getClass());
    
+   /**
+    * <p>URI String variable
+    */
    private String strURI;
+   
+   /**
+    * <p>Serial number
+    */
    private String strSN;
    private String strXMLPath;
    private String strPastTime;
@@ -48,7 +58,7 @@ import com.tdtc.xbf.ReadConfig;
    // actually global to all clients since there is only
    // one instance of the servlet that has multiple threads
    // of execution
-   //com.tdtc.jdbc.ConnectionPool m_connectionPool;
+   //com.cartionsoft.jdbc.ConnectionPool m_connectionPool;
    
     /* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#HttpServlet()
@@ -69,10 +79,13 @@ import com.tdtc.xbf.ReadConfig;
 	public void init(ServletConfig cfg) throws ServletException {
 		// TODO Auto-generated method stub
 		super.init(cfg);
-		
+		String p = getServletContext().getContextPath();
+		logger.info("ContextPath: " + p);
 		//strXMLPath = cfg.getInitParameter("xmlPath");
 		ConfigServlet cs = new ConfigServlet();
 		strXMLPath = cs.getConfigContext(cfg, "xmlPath");
+		
+		
 	}
 	
 	/**

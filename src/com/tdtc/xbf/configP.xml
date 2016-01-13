@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <servlet-config>
+    <url>
+      <url1>http://127.0.0.1:8080/carNumber/search</url1>
+    </url>
+    <lib-name>
+      <lib-file1>xbfLibR.dll</lib-file1>
+    </lib-name>
+    <xbf-path>
+      <xbf-file1>D://vm_file//projects//sjz//demo01.xbf</xbf-file1>
+    </xbf-path>
+  </servlet-config>
+  
