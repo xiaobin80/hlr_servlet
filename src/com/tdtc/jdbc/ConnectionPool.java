@@ -43,22 +43,6 @@ public class ConnectionPool
 	
 	private String strUserName, strPWD;
 	private ExecutorService execService;
-	// set
-	// MS SQL
-	
-//	String strUrl = "jdbc:jtds:sqlserver://127.0.0.1:1433/pubs";
-//	String strDriverName = "net.sourceforge.jtds.jdbc.Driver";
-//	String strUserName = "sa";
-//	String strPassWord = "123456";
-	
-	/*
-	 * mysql
-	 */
-
-//	String strUrl = "jdbc:mysql://localhost:3306/carnumber";
-//	String strDriverName = "com.mysql.jdbc.Driver";
-//	String strUserName="root";
-//	String strPassWord="123456";
 	
 	// JDBC Driver name
 	//String m_JDBCDriver = "com.mysql.jdbc.Driver"; // mySQL

@@ -1,4 +1,4 @@
-package com.tdtc.web;
+package com.cartionsoft.web;
 /**
  * @(#)PastTimeList.java
  * 
@@ -9,8 +9,8 @@ package com.tdtc.web;
  * @version 1.2
  * @date 2009.03.06
  * 
- * @version 1.3.1
- * @date 2009.03.13
+ * @version 1.3.2
+ * @date 2009.03.15
  */
 
 import java.io.*;
@@ -19,9 +19,8 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import org.apache.log4j.*;
 
-import com.tdtc.jdbc.ConnectionPool;
+import com.tdtc.xbf.ConfigServlet;
 import com.tdtc.xbf.ReadConfig;
-import com.tdtc.xbf.*;
 
 
 /**
@@ -35,51 +34,30 @@ import com.tdtc.xbf.*;
    
    private final Logger logger = Logger.getLogger(this.getClass());
    
-   private String strUserName;
-   private String strPassWord;
    private String strURI;
-   private static String strXbfContent;
    private String strSN;
+   private String strXMLPath;
    private String strPastTime;
    private String strQueryPastTime, strQueryDataTable;
    private String[] strColNameAry;
    private int iRowCount;
    private StringBuilder strBuilder;
    private StringBuffer strBuffer;
-   private static String strLibPath;
-   private static String strXbfPath;
-   private static ReadConfig readConfig;
 
    // Our connection pool. Note that instance variables are
    // actually global to all clients since there is only
    // one instance of the servlet that has multiple threads
    // of execution
-   com.tdtc.jdbc.ConnectionPool m_connectionPool;
+   //com.tdtc.jdbc.ConnectionPool m_connectionPool;
    
     /* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#HttpServlet()
 	 */
 	public PastTimeList() {
 		super();
-		strColNameAry = new String[] {"trainNo", "carN", "carM", "carW1", "carSW", "pTime"};
+		strColNameAry = 
+			new String[] {"trainNo", "carN", "carM", "carW1", "carSW", "pTime"};
 	}
-	
-	static {
-		// 
-		readConfig = new ReadConfig("D://war//config//configP.xml");
-		
-		try {
-			strLibPath = readConfig.getElement(1, "lib-file1");
-			strXbfPath = readConfig.getElement(2, "xbf-file1");
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-		
-		ReadXbf readX = new ReadXbf(strLibPath);
-		strXbfContent = readX.readRecordMsSql(-1, strXbfPath);
-	}
-	
 	
 	/**
 	 * <p>Initialize the servlet. This is called once when the servlet
@@ -88,28 +66,13 @@ import com.tdtc.xbf.*;
 	 * 
 	 */
 	@Override
-	public void init() throws ServletException {
+	public void init(ServletConfig cfg) throws ServletException {
 		// TODO Auto-generated method stub
-		super.init();
+		super.init(cfg);
 		
-		strUserName = getDBUserMsSql(strXbfContent);
-		strPassWord = getPWDMsSql(strXbfContent);
-		
-		// Create our connection pool
-	    m_connectionPool = new ConnectionPool(strUserName, strPassWord);
-	    
-	    // Initialize the connection pool. This will start all
-	    // of the connections as specified in the connection
-	    // pool configuration file
-	    try {
-	    	m_connectionPool.initialize();
-	    }
-	    catch (Exception ex) {
-	    	// Convert the exception
-	    	ex.printStackTrace();
-	    	throw new ServletException
-	    	("Unable to initialize connection pool");
-      }
+		//strXMLPath = cfg.getInitParameter("xmlPath");
+		ConfigServlet cs = new ConfigServlet();
+		strXMLPath = cs.getConfigContext(cfg, "xmlPath");
 	}
 	
 	/**
@@ -118,10 +81,6 @@ import com.tdtc.xbf.*;
 	 */
 	@Override
 	public void destroy() {
-		// Tear down our connection pool if it was created
-		if (m_connectionPool != null) {
-			m_connectionPool.destroy();
-		}
 		super.destroy();
 	}
 	
@@ -155,7 +114,7 @@ import com.tdtc.xbf.*;
 		strBuilderTemp.append("<br>" + "\n");
 		
 		try {
-			ReadConfig rc = new ReadConfig("D://war//config//configP.xml");
+			ReadConfig rc = new ReadConfig(strXMLPath);
 			strURI = rc.getElement(0, "url1");
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -225,8 +184,15 @@ import com.tdtc.xbf.*;
 			String queryDropList,
 			String queryCarData,
 			PrintWriter out) throws ServletException {
+		ServletConfig config = getServletConfig();
+		ServletContext context = config.getServletContext();
+		Object obj = context.getAttribute(ConnectionServlet.KEY);
 		
-		
+	    if (obj == null) {
+	          throw new ServletException("ConnectionServlet not started");
+	    }
+	    ConnectionServlet connServlet = (ConnectionServlet)obj;
+		//
 		Connection conn = null;
 		Statement 
 		  stmtDropList = null, stmtCarData = null;
@@ -238,7 +204,8 @@ import com.tdtc.xbf.*;
 		boolean blnRc = false;
 			
 		try {
-			conn = m_connectionPool.getConnection();
+			//conn = m_connectionPool.getConnection();
+			conn = connServlet.getConnection();
 			
 			// output drop list
 			stmtDropList = conn.createStatement();
@@ -430,30 +397,4 @@ import com.tdtc.xbf.*;
     	return strBuilderTemp.toString();
     }
 	
-	/**
-	 * <p> read private strXbfContent value
-	 * 
-	 * @param XbfContent xbf file's content
-	 * @return xbf file's DB user
-	 */
-	
-	public String getDBUserMsSql(String xbfContent) {
-		int iBeginIndex = xbfContent.indexOf("ID=");
-		int iEndIndex = xbfContent.indexOf(";I");
-		String strUser = xbfContent.substring(iBeginIndex + 3, iEndIndex);
-		return strUser;
-	}
-
-	/**
-	 * <p> read private strXbfContent value
-	 * 
-	 * @param XbfContent xbf file's content
-	 * @return xbf file's password
-	 */
-	public String getPWDMsSql(String xbfContent) {
-		int iBeginIndex = xbfContent.indexOf("d=");
-		int iEndIndex = xbfContent.indexOf(";Per");
-		String strPwd = xbfContent.substring(iBeginIndex + 2, iEndIndex);
-		return strPwd;
-	}
 }
