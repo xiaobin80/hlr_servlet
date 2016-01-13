@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="car number prj2" default="all" basedir=".">
+
+	<property file="build.properties"/>
+	
+    <path id="master-classpath">
+        <fileset dir="${WebContent.WEB-INF.lib.dir}">
+            <include name="*.jar"/>
+        </fileset>
+        <!-- We need the servlet API classes: -->
+        <!--  * for Tomcat 5/6 use servlet-api.jar -->
+        <!--  * for other app servers - check the docs -->
+        <fileset dir="${appserver.lib}">
+            <include name="servlet*.jar"/>
+        </fileset>
+        <pathelement path="${build.class.dir}"/>
+
+    </path>
+	
+	
+	<!-- mkdir -->
+	<target name="prepare" description="prepare work">
+		<mkdir dir="${build.class.dir}"/>
+		<delete dir="${war.dir}"/>
+		<mkdir dir="${war.dir}"/>
+	</target>
+	
+	<!-- compile -->
+	<target name="compile" description="compile source">
+		<javac destdir="${build.class.dir}" source="1.5" target="1.5" debug="true"
+				deprecation="false" optimize="false" failonerror="true">
+			<src path="${src.dir}"/>
+			<classpath refid="master-classpath"/>
+		</javac>
+	</target>
+
+	
+	<!-- package -->
+	<target name="deploywar" description="deploy war">
+	
+		<!-- copy properties file to build class directory -->
+		<copy todir="${build.class.dir}">
+			<fileset dir="${src.dir}">
+				<include name="*.properties"/>
+			</fileset>
+		</copy>
+		
+		<war destfile="${name}.war" webxml="${WebContent.WEB-INF.dir}/web.xml" 
+		manifest="${WebContent.META-INF.dir}/MANIFEST.mf">
+			<fileset dir="${WebContent.dir}">
+				<include name="**/*.*"/>
+			</fileset>
+			<!--
+			<manifest>
+				<attribute name="Implementation-Title" value="Car Number"/>
+				<attribute name="Program-Version" value="1.2.0"/>
+				<attribute name="Implementation-Version" value="1.2.0"/>
+			</manifest>
+			-->
+		</war>
+		
+		<!-- move war file to war directory -->
+		<move todir="${war.dir}" preservelastmodified="true">
+            <fileset dir=".">
+                <include name="*.war"/>
+            </fileset>
+        </move>
+	
+	</target>	
+	
+		<!-- delete dir file -->
+	<target name="cleandir" description="clean dir">
+		<delete dir="${build.class.dir}"/>
+	</target>
+	
+	
+	<target name="all" depends="prepare, compile, deploywar, cleandir">
+	
+	</target>
+	
+</project>
