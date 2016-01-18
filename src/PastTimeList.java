@@ -124,7 +124,7 @@ import org.apache.log4j.*;
 		try {
 			strPassWord = getPWDMsSql(strXbfContent);
 			strUserName = getDBUserMsSql(strXbfContent);
-			strUserName = "root";
+			//strUserName = "root";
 		} catch (Exception e) {
 			// TODO: handle exception
 			logger.warn("DB connection error");
